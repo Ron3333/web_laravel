@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Post;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use App\Http\Requests\Post\StoreRequest;
 
 class PostController extends Controller
 {
@@ -14,40 +15,8 @@ class PostController extends Controller
      */
     public function index()
     {
-       // echo "Post";
-       /*
-       return Post::create(
-                ['title' => "test",
-                'slug' => "test",
-                'content' => "test",
-                'category_id' => 1,
-                'description' => "test",
-                'posted' => "not",
-                'image' => "test"]
-            );
-            */
-            //dd(Post::get());
-            //$posts = Post::get();
-           // return $posts[1]->title;
-            /*
-            foreach($posts as $post){
-               echo  $post->title;
-               echo "<br>";
-            }
-          
-            echo "++++++++++++++++++++++++++++++";
-               echo "<br>";
-            for ($i = 0; $i < $posts->count(); $i++) {
-                echo $posts[$i]->title;
-                echo "<br>";
-            }
-
-            */
-            Category::create([
-                'title' => 'Cate 2',
-                'slug' => 'cate-2'
-            ]);
-            
+         $posts = Post::get();
+         return view('dashboard.post.index', compact('posts'));
     }
 
     /**
@@ -55,15 +24,19 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        $categories = Category::pluck('id', 'title');
+         //dd($categories);
+        return view('dashboard.post.create', compact('categories'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreRequest  $request)
     {
-        //
+        //dd($request->all());
+        Post::create($request->all());
+        return to_route("post.index");
     }
 
     /**
