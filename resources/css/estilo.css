@@ -1,0 +1,10 @@
+button, input, select, optgroup, textarea {
+ 
+    border: 1px solid gray;
+}
+
+button, input, select, optgroup, textarea {
+   
+    border: 1px solid gray;
+    padding: 2px;
+}
