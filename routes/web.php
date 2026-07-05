@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\Dashboard\PostController;
+use App\Http\Controllers\Dashboard\CategoryController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -28,3 +29,4 @@ Route::get('/prueba3/{name?}', function($name="anonimo"){
  Route::get('/test-2', [TestController::class, 'vista']);
 
  Route::resource('post', PostController::class);
+ Route::resource('category', CategoryController::class);

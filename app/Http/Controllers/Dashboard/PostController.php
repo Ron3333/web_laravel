@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Post;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -26,9 +27,9 @@ class PostController extends Controller
             );
             */
             //dd(Post::get());
-            $posts = Post::get();
+            //$posts = Post::get();
            // return $posts[1]->title;
-
+            /*
             foreach($posts as $post){
                echo  $post->title;
                echo "<br>";
@@ -40,6 +41,12 @@ class PostController extends Controller
                 echo $posts[$i]->title;
                 echo "<br>";
             }
+
+            */
+            Category::create([
+                'title' => 'Cate 2',
+                'slug' => 'cate-2'
+            ]);
             
     }
 
