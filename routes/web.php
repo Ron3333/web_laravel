@@ -6,6 +6,7 @@ use App\Http\Controllers\Dashboard\PostController;
 use App\Http\Controllers\Dashboard\CategoryController;
 use App\Models\Post;
 use App\Http\Controllers\BaseDatosController;
+use App\Http\Controllers\blog\BlogController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -51,4 +52,11 @@ Route::get('/prueba3/{name?}', function($name="anonimo"){
     Route::resource('post', PostController::class);
     Route::resource('category', CategoryController::class);
    //Route::get('/pepe2', [PostController::class, 'pepe']);
+});
+
+Route::group(['prefix' => 'blog'], function () {
+    Route::controller(BlogController::class)->group(function () {
+       Route::get('', [BlogController::class, 'index'])->name('blog.index');
+       Route::get('detail/{post}', [BlogController::class, 'show'])->name('blog.show');
+    });
 });
