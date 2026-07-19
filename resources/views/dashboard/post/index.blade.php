@@ -1,5 +1,6 @@
 @extends('dashboard.layout')
 @section('content')
+<h4><a href="{{ route('post.create') }}"> ** Crear POST ** </a> </h4>
 <table>
     <thead>
         <tr>

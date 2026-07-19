@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
-use App\Models\Post;
+use App\Http\Requests\Category\PutRequest;
+use App\Http\Requests\Category\StoreRequest;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -14,32 +15,9 @@ class CategoryController extends Controller
      */
     public function index()
     {
-       // echo "Estoy en el metodo index Category";
-          //$post = Post::find(2)->tosql();
-          //$post = Post::where('id', 2)->toSql();
-          //echo $post;
-          /*
-        
-          //dd($post);
-
-          return $post->update( [
-                'title' => "test new",
-                'slug' => "test-new",
-                'content' => "test new",
-                'category_id' => 1,
-                'description' => "test new",
-                'posted' => "not",
-                'image' => "test"
-                ]);
-                */
-        try {
-            $post = Post::find(4);
-            $ver = $post->delete();
-           //echo $ver;
-         } catch (\Throwable $th) {
-            echo "Error: ".$th->getMessage();
-         }
-        
+        $categories = Category::paginate(2);
+        //dd($categories);
+        return view('dashboard/category/index', compact('categories'));
     }
 
     /**
@@ -47,15 +25,17 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        //
+        $category = new Category();
+        return view('dashboard.category.create', compact('category'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
-        //
+        Category::create($request->validated());
+        return to_route('category.index');
     }
 
     /**
@@ -63,7 +43,7 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        //
+        return view('dashboard/category/show',['category'=> $category]);
     }
 
     /**
@@ -71,15 +51,16 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        //
+        return view('dashboard.category.edit', compact('category'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Category $category)
+    public function update(PutRequest $request, Category $category)
     {
-        //
+        $category->update($request->validated());
+        return to_route('category.index');
     }
 
     /**
@@ -87,6 +68,7 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        //
+       $category->delete();
+        return to_route('category.index');
     }
 }

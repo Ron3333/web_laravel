@@ -4,12 +4,23 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\Dashboard\PostController;
 use App\Http\Controllers\Dashboard\CategoryController;
+use App\Models\Post;
+use App\Http\Controllers\BaseDatosController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/base-datos', [BaseDatosController::class, 'index']);
+
+Route::middleware([App\Http\Middleware\TestMiddleware::class])->group(function () {
+    Route::get('/control/{id}', function (int $id) {
+            echo $id;
+    });
+});
+
 Route::get('/test', function () {
+    
     echo "Esto es un TEST";
 });
 
@@ -28,5 +39,16 @@ Route::get('/prueba3/{name?}', function($name="anonimo"){
  Route::get('/test-1', [TestController::class, 'index']);
  Route::get('/test-2', [TestController::class, 'vista']);
 
- Route::resource('post', PostController::class);
- Route::resource('category', CategoryController::class);
+ //Route::resource('post', PostController::class);
+ //Route::resource('category', CategoryController::class);
+
+ Route::group(['prefix' => 'dashboard', 'middleware'=> ['auth',App\Http\Middleware\UserIsAdminMiddleware::class]], function () {
+
+    Route::get('/', function(){
+        return view('dashboard.dashboard');
+    })->name("dashboard");
+
+    Route::resource('post', PostController::class);
+    Route::resource('category', CategoryController::class);
+   //Route::get('/pepe2', [PostController::class, 'pepe']);
+});

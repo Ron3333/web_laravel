@@ -8,6 +8,7 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Requests\Post\StoreRequest;
 use App\Http\Requests\Post\PutRequest;
+use Pest\Support\View;
 
 class PostController extends Controller
 {
@@ -40,7 +41,7 @@ class PostController extends Controller
     {
         //dd($request->all());
         Post::create($request->all());
-        return to_route("post.index");
+        return to_route("post.index")->with('status', 'Post creado');
     }
 
     /**
@@ -48,7 +49,10 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        //
+        //dd($id);
+        //$post = Post::find($id);
+        //dd($post);
+        return view('dashboard.post.show', compact('post'));
     }
 
     /**
@@ -71,7 +75,7 @@ class PostController extends Controller
             $request->image->move(public_path("image"), $data["image"] );
         }
         $post->update($data);
-        return to_route("post.index");
+        return to_route("post.index")->with('status', 'Post actualizado');;
     }
 
     /**
@@ -80,6 +84,10 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         $post->delete();
-        return to_route("post.index");
+        return to_route("post.index")->with('status', 'Post eliminado');
+    }
+
+    public function pepe(){
+        echo "Soy PEPE";
     }
 }

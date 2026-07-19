@@ -8,3 +8,10 @@ button, input, select, optgroup, textarea {
     border: 1px solid gray;
     padding: 2px;
 }
+
+*, :after, :before, ::backdrop {
+    box-sizing: border-box;
+    border: 0 solid;
+    margin: 4px;
+    padding: 4px;
+}
