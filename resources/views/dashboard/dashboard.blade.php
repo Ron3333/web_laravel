@@ -13,9 +13,25 @@
     @auth
         <p>Bienvenido, <b>{{ auth()->user()->name }}</b></p>
     @endauth
+
+    @auth
+        @if(auth()->user()->hasPermissionTo('editor.post.update'))
+            <h5>Puede editar Posts</h5>
+        @else
+            <h5>No tiene permiso editor.post.update</h5>
+        @endif
+    @endauth
+
+    @can('editor.post.update')
+         <h5>PUEDES EDITAR EL POST </h5>
+    @endcan
+   
         <ul>
             <li><a href="{{ route('post.index') }}">Ver Post</a></li>
             <li><a href="{{ route('category.index') }}">Ver Categoria</a></li>
+            <li><a href="{{ route('role.index') }}">Ver Roles</a></li>
+            <li><a href="{{ route('permission.index') }}">Ver Permisos</a></li>
+            <li><a href="{{ route('user.index') }}">Ver Usuarios</a></li>
         </ul>
 
     <form method="POST" action="{{ route('logout') }}">

@@ -19,7 +19,12 @@ class PostController extends Controller
      */
     public function index()
     {
-       
+        //dd(Auth::user());
+        /*
+        if(Auth::user()->hasPermissionTo('editor.post.update')){
+            echo "No tienes permiso para actualizar los posts";
+        }
+            */
          //$posts = Post::get();
 
         $posts = Post::paginate(4);

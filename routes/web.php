@@ -4,6 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\Dashboard\PostController;
 use App\Http\Controllers\Dashboard\CategoryController;
+use App\Http\Controllers\Dashboard\RoleController;
+use App\Http\Controllers\Dashboard\PermissionController;
+use App\Http\Controllers\Dashboard\UserController;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\Profile;
@@ -56,7 +59,14 @@ Route::get('/prueba3/{name?}', function($name="anonimo"){
 
     Route::resource('post', PostController::class);
     Route::resource('category', CategoryController::class);
-   //Route::get('/pepe2', [PostController::class, 'pepe']);
+    Route::resource('role', RoleController::class);
+    Route::resource('permission', PermissionController::class);
+    Route::resource('user', UserController::class);
+  
+    //  roles - permissions
+    Route::post('role/assign/permission/{role}', [App\View\Components\Dashboard\role\permission\Manage::class, 'handle'])->name('role.assign.permission');
+    Route::post('role/delete/permission/{role}', [App\View\Components\Dashboard\role\permission\Manage::class, 'delete'])->name('role.delete.permission');
+
 });
 
 Route::group(['prefix' => 'blog'], function () {
