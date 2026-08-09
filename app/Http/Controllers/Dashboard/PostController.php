@@ -19,19 +19,13 @@ class PostController extends Controller
      */
     public function index()
     {
-        //dd(Auth::user());
-        /*
-        if(Auth::user()->hasPermissionTo('editor.post.update')){
-            echo "No tienes permiso para actualizar los posts";
+        
+        if (!Auth::user()->hasPermissionTo('editor.post.index')) {
+            abort(403, 'No tienes permiso para ver los posts');
         }
-            */
-         //$posts = Post::get();
 
         $posts = Post::paginate(4);
-        if (!Gate::allows('index', $posts[0])) {
-            abort(403);
-        }
-         //dd($posts);
+       
          return view('dashboard.post.index', compact('posts'));
     }
 
@@ -40,6 +34,9 @@ class PostController extends Controller
      */
     public function create()
     {
+         if (!Auth::user()->hasPermissionTo('editor.post.create')) {
+            abort(403, 'No tienes permiso para crear posts');
+        }
         $categories = Category::pluck('id', 'title');
          //dd($categories);
         $post = new Post();
@@ -51,8 +48,10 @@ class PostController extends Controller
      */
     public function store(StoreRequest  $request)
     {
-        //dd($request->all());
-        //Post::create($request->all());
+        if (!Auth::user()->hasPermissionTo('editor.post.create')) {
+            abort(403, 'No tienes permiso para crear posts');
+        }
+
         $post = new Post($request->validated());
         $user = Auth::user();
         //dd($user->name);
@@ -66,9 +65,9 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        //dd($id);
-        //$post = Post::find($id);
-        //dd($post);
+        if (!Auth::user()->hasPermissionTo('editor.post.index')) {
+            abort(403, 'No tienes permiso para ver posts');
+        }
         return view('dashboard.post.show', compact('post'));
     }
 
@@ -77,11 +76,9 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     { 
-        /*
-       if (!Gate::allows('update', $post)) {
-            return abort(403);
+       if (!Auth::user()->hasPermissionTo('editor.post.update')) {
+            abort(403, 'No tienes permiso para editar posts');
         }
-        */
 
         $res = Gate::inspect('update', $post);
         if (!$res->allowed()) {
@@ -98,16 +95,11 @@ class PostController extends Controller
      */
     public function update(PutRequest $request, Post $post)
     {
-       /* 
-       if (!Gate::allows('update', $post)) {
-            return abort(403);
+        if (!Auth::user()->hasPermissionTo('editor.post.update')) {
+            abort(403, 'No tienes permiso para editar posts');
         }
-       */
 
-        $res = Gate::inspect('update', $post);
-        if (!$res->allowed()) {
-            return abort(403, $res->message());
-        }
+      
 
         $data = $request->validated();
         if( isset($data["image"])){
@@ -123,8 +115,8 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        if (!Gate::allows('delete', $post)) {
-            return abort(403);
+        if (!Auth::user()->hasPermissionTo('editor.post.destroy')) {
+            abort(403, 'No tienes permiso para eliminar posts');
         }
 
         $post->delete();

@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Http\Requests\Category\PutRequest;
 use App\Http\Requests\Category\StoreRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
@@ -15,6 +16,10 @@ class CategoryController extends Controller
      */
     public function index()
     {
+        if (!Auth::user()->hasPermissionTo('editor.category.index')) {
+            abort(403, 'No tienes permiso para ver las categorías');
+        }
+
         $categories = Category::paginate(2);
         //dd($categories);
         return view('dashboard/category/index', compact('categories'));
@@ -25,6 +30,10 @@ class CategoryController extends Controller
      */
     public function create()
     {
+         if (!Auth::user()->hasPermissionTo('editor.category.create')) {
+            abort(403, 'No tienes permiso para crear categorías');
+        }
+
         $category = new Category();
         return view('dashboard.category.create', compact('category'));
     }
@@ -34,6 +43,9 @@ class CategoryController extends Controller
      */
     public function store(StoreRequest $request)
     {
+         if (!Auth::user()->hasPermissionTo('editor.category.create')) {
+            abort(403, 'No tienes permiso para crear categorías');
+        }
         Category::create($request->validated());
         return to_route('category.index');
     }
@@ -43,6 +55,9 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
+        if (!Auth::user()->hasPermissionTo('editor.category.index')) {
+            abort(403, 'No tienes permiso para ver las categorías');
+        }
         return view('dashboard/category/show',['category'=> $category]);
     }
 
@@ -51,6 +66,9 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
+         if (!Auth::user()->hasPermissionTo('editor.category.update')) {
+            abort(403, 'No tienes permiso para editar categorías');
+        }
         return view('dashboard.category.edit', compact('category'));
     }
 
@@ -59,6 +77,9 @@ class CategoryController extends Controller
      */
     public function update(PutRequest $request, Category $category)
     {
+         if (!Auth::user()->hasPermissionTo('editor.category.update')) {
+            abort(403, 'No tienes permiso para editar categorías');
+        }
         $category->update($request->validated());
         return to_route('category.index');
     }
@@ -68,6 +89,9 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
+        if (!Auth::user()->hasPermissionTo('editor.category.destroy')) {
+            abort(403, 'No tienes permiso para eliminar categorías');
+        }
        $category->delete();
         return to_route('category.index');
     }

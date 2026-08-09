@@ -31,7 +31,9 @@
             <li><a href="{{ route('category.index') }}">Ver Categoria</a></li>
             <li><a href="{{ route('role.index') }}">Ver Roles</a></li>
             <li><a href="{{ route('permission.index') }}">Ver Permisos</a></li>
-            <li><a href="{{ route('user.index') }}">Ver Usuarios</a></li>
+            @if(auth()->user()->hasRole('Admin'))
+                <li><a href="{{ route('user.index') }}">Ver Usuarios</a></li>
+             @endif
         </ul>
 
     <form method="POST" action="{{ route('logout') }}">
