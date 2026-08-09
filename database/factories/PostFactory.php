@@ -24,6 +24,7 @@ class PostFactory extends Factory
             'content' => $this->faker->paragraphs(5, true),
             'description' => $this->faker->sentence(),
             'category_id' => $this->faker->randomElement([1, 2, 3, 4, 5,6,7,8,9,10]),
+            'user_id' => $this->faker->randomElement([1, 2]),
             'posted' => $this->faker->randomElement(['yes', 'not']),
             'image' => $this->faker->imageUrl(),
             //'user_id' => $this->faker->randomElement([1, 2,]),

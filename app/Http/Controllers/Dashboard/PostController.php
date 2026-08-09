@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests\Post\StoreRequest;
 use App\Http\Requests\Post\PutRequest;
 use Pest\Support\View;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
@@ -17,8 +19,13 @@ class PostController extends Controller
      */
     public function index()
     {
+       
          //$posts = Post::get();
-         $posts = Post::paginate(4);
+
+        $posts = Post::paginate(4);
+        if (!Gate::allows('index', $posts[0])) {
+            abort(403);
+        }
          //dd($posts);
          return view('dashboard.post.index', compact('posts'));
     }
@@ -40,7 +47,12 @@ class PostController extends Controller
     public function store(StoreRequest  $request)
     {
         //dd($request->all());
-        Post::create($request->all());
+        //Post::create($request->all());
+        $post = new Post($request->validated());
+        $user = Auth::user();
+        //dd($user->name);
+        $user->posts()->save($post);
+
         return to_route("post.index")->with('status', 'Post creado');
     }
 
@@ -59,7 +71,19 @@ class PostController extends Controller
      * Show the form for editing the specified resource.
      */
     public function edit(Post $post)
-    {
+    { 
+        /*
+       if (!Gate::allows('update', $post)) {
+            return abort(403);
+        }
+        */
+
+        $res = Gate::inspect('update', $post);
+        if (!$res->allowed()) {
+            return abort(403, $res->message());
+        }
+
+
         $categories = Category::pluck('id', 'title');
         return view('dashboard.post.edit', compact('categories', 'post'));
     }
@@ -69,6 +93,17 @@ class PostController extends Controller
      */
     public function update(PutRequest $request, Post $post)
     {
+       /* 
+       if (!Gate::allows('update', $post)) {
+            return abort(403);
+        }
+       */
+
+        $res = Gate::inspect('update', $post);
+        if (!$res->allowed()) {
+            return abort(403, $res->message());
+        }
+
         $data = $request->validated();
         if( isset($data["image"])){
             $data["image"] = time().".".$data["image"]->extension();
@@ -83,6 +118,10 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
+        if (!Gate::allows('delete', $post)) {
+            return abort(403);
+        }
+
         $post->delete();
         return to_route("post.index")->with('status', 'Post eliminado');
     }

@@ -5,13 +5,20 @@ use App\Http\Requests\Category\PutRequest;
 use App\Http\Requests\Category\StoreRequest;
 use App\Models\Category;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Cache; // <-- Aquí está
 
 
 class CategoryController extends Controller
 {
     public function index(): JsonResponse
     {
-        return response()->json(Category::paginate(5));
+        //return response()->json(Category::paginate(5));
+
+        return response()->json(
+            Cache::remember('category_index', now()->addMinutes(2), function () {
+                 return Category::all()->toArray();
+            })
+         );
     }
 
     public function store(StoreRequest $request): JsonResponse
